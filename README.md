@@ -15,3 +15,15 @@ The random library has support for two Mersenne Twister types:
 
 mt19937 is a Mersenne Twister that generates 32-bit unsigned integers
 mt19937_64 is a Mersenne Twister that generates 64-bit unsigned integers
+
+2) Rolling a dice with Mersenne Twister
+
+A 32-bit PRNG will generate random numbers between 0 and 4,294,967,295, but we do not always want numbers in that range. If our program was simulating a board game or a dice game, we’d probably want to simulate the roll of a 6-sided dice by generating random numbers between 1 and 6. If our program was a dungeon adventure, and the player had a sword that did between 7 and 11 damage to monsters, then we’d want to generate random numbers between 7 and 11 whenever the player hit a monster.
+
+While each number in the sequence is random with regards to the previous one, the entire sequence is not random at all! Each run of our program produces the exact same result.
+
+In order to make our entire sequence randomized differently each time the program is run, we need to pick a seed that’s not a fixed number. The first answer that probably comes to mind is that we need a random number for our seed! That’s a good thought, but if we need a random number to generate random numbers, then we’re in a catch-22. It turns out, we really don’t need our seed to be a random number -- we just need to pick something that changes each time the program is run. Then we can use our PRNG to generate a unique sequence of pseudo-random numbers from that seed.
+
+There are two methods that are commonly used to do this:
+    Use the system clock
+    Use the system’s random device
