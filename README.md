@@ -25,5 +25,11 @@ While each number in the sequence is random with regards to the previous one, th
 In order to make our entire sequence randomized differently each time the program is run, we need to pick a seed that’s not a fixed number. The first answer that probably comes to mind is that we need a random number for our seed! That’s a good thought, but if we need a random number to generate random numbers, then we’re in a catch-22. It turns out, we really don’t need our seed to be a random number -- we just need to pick something that changes each time the program is run. Then we can use our PRNG to generate a unique sequence of pseudo-random numbers from that seed.
 
 There are two methods that are commonly used to do this:
-    Use the system clock
-    Use the system’s random device
+    Use the system clock or Use the system’s random device
+    
+3) Solution to underseeding issues of Mersenne Twister
+
+The internal state of a Mersenne Twister is 624 bytes in size. Using the system clock or system's random device are temporary solutions only so our seed is only a single 32-bit integer. This means we’re essentially initializing a 624-byte object with a 4-byte value, which is significantly underseeding the Mersenne Twister PRNG. Underseeded PRNG can generate results that are suboptimal for applications that need the highest quality results. For example, seeding "std::mt19937" with a single 32-bit value will never generate the number 42 as its first output.
+
+The solution to this is to use std::seed_seq, a type that performs two functions.  So if you initialize std::seed_seq with a single 32-bit integer (e.g. from std::random_device) and then initialize a Mersenne Twister with the std::seed_seq object, std::seed_seq will generate 620 bytes of additional seed data which is better than nothing.
+
